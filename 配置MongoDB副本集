@@ -1,1 +1,56 @@
+副本集介绍
+-指在多个服务器上存储数据副本，并实现数据同步。
+-提高数据可用性,安全性,方便数据故障恢复。
+MongoDB复制原理
+副本集工作过程
+-至少需要两个节点。其中一个是主节点,负责处理客户端请求,其余是从节点,负责复制主节点数据。
+-主节点记录所有操作oplog,从节点定期轮询主节点获取这些操作,然后对自己的数据副本执行这些操作,
+ 从而保证从节点的数据与主节点一致。
 配置MongoDB副本集
+
+创建mongodb副本集
+每台主机的配置文件
+[root@mongodb51 mongodb]# vim etc/mongodb.conf
+dbpath=/usr/local/mongodb/data/db/
+logpath=/usr/local/mongodb/log/mongodb.log
+logappend=true 
+fork=true
+bind_ip=192.168.4.51
+port=27077
+replSet=rs1     //   加入到副本集，rs1名字随便起，想知道谁和我在一个副本集里，三台机器的名字一样,都写rs1
+# 配置文件的选项也可以在启动服务时加入命令选项
+配置集群信息
+rs1_config = {        //rs1_config随便起变量名,要记住
+ _id:"rs1",         //必须为rs1这个，三台主机集群名，配置文件里面写的是这个
+ members:[
+ {_id:0,host:"ip地址：端口"},        //_id值随意，host值固定
+ {_id:1,host:"ip地址：端口"},
+ {_id:2,host:"ip地址：端口"}
+ ]
+ };       
+ 
+ 初始化Replica Sets环境
+  rs.initiate(设置的变量名)
+ 
+ rs.status() //查看状态信息 （主库从库都可查询）
+ rs.isMaster() //查看是否是master库
+ *从库默必须输入 db.getMongo().setSlaveOk() 才能查看数据
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
